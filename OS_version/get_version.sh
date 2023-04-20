@@ -31,7 +31,7 @@ do
             sleep 2
             echo "cli"
             sleep 1
-            echo "show version"
+            echo "show version detail | no-more"
             sleep 2
             echo "exit"
             sleep 1
@@ -41,6 +41,7 @@ do
         echo "Hostname: $(grep Hostname /tmp/show_version.txt | awk '{print $2}')" >> "$output_file"
         echo "Model: $(grep Model /tmp/show_version.txt | awk '{print $2}')" >> "$output_file"
         echo "Junos: $(grep Junos /tmp/show_version.txt | awk '{print $2}')" >> "$output_file"
+	echo "Kernel: $(grep KERNEL /tmp/show_version.txt | awk '{print $2}')" >> "$output_file"
 
         # Add a line to differentiate the next switch data in the output file
         echo "-----------------------------------------------------" >> "$output_file"
