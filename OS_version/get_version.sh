@@ -13,11 +13,12 @@ devices="switches.txt"
 
 # Output file names
 output_txt_file="/homes/nithinj/data/switch_version.txt"
-output_excel_file="/homes/nithinj/data/switch_version.xlsx"
+output_csv_file="/homes/nithinj/data/switch_version.csv"
 
 # Clear the output files before running the script
 > "$output_txt_file"
-echo -e "Hostname\tModel\tJunos\tKernel" > "$output_excel_file"
+> "$output_csv_file"
+echo -e "Hostname,Model,Junos,Kernel" > "$output_csv_file"
 
 # Loop over each IP address in the file
 while read -r ip_address
@@ -40,10 +41,10 @@ do
         } | telnet "$ip_address"  > /tmp/show_version.txt 2>&1
 
         # Extract hostname, model, and Junos version from the temporary file
-        hostname=$(grep Hostname /tmp/show_version.txt | awk '{print $2}')
-        model=$(grep Model /tmp/show_version.txt | awk '{print $2}')
-        junos=$(grep Junos /tmp/show_version.txt | awk '{print $2}')
-        kernel=$(grep KERNEL /tmp/show_version.txt | awk '{print $2}')
+        hostname=$(grep Hostname /tmp/show_version.txt | awk '{print $2}' | tr -d '[:space:]')
+        model=$(grep Model /tmp/show_version.txt | awk '{print $2}' | tr -d '[:space:]')
+        junos=$(grep Junos /tmp/show_version.txt | awk '{print $2}' | tr -d '[:space:]')
+        kernel=$(grep KERNEL /tmp/show_version.txt | awk '{print $2}' | tr -d '[:space:]')
 
         # Write the output to the text file
         echo "Hostname: $hostname" >> "$output_txt_file"
@@ -52,13 +53,13 @@ do
         echo "Kernel: $kernel" >> "$output_txt_file"
 
         # Write the output to the Excel file
-        echo -e "$hostname\t$model\t$junos\t$kernel" >> "$output_excel_file"
+        echo -e "$hostname,$model,$junos,$kernel" >> "$output_csv_file"
 
         # Add a line to differentiate the next switch data in the output file
         echo "-----------------------------------------------------" >> "$output_txt_file"
 
         # Print a message indicating that the output has been saved
-        echo "Output of $ip_address saved to $output_txt_file and $output_excel_file"
+        echo "Output of $ip_address saved to $output_txt_file and $output_csv_file"
     else
         # Display message indicating that the device could not be reached
         echo "Device $ip_address is not reachable"
